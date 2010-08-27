@@ -36,11 +36,8 @@ class EntryAdmin(admin.ModelAdmin):
                    'comment_enabled', 'pingback_enabled',
                    #'creation_date', 'start_publication', 'end_publication', 
                    'sites')
-    list_display = ('get_title', 'get_authors', 'get_categories',
-                    'get_tags', 'get_sites',
-                    'comment_enabled', 'pingback_enabled',
-                    'get_is_actual', 'get_is_visible', 'get_link',
-                    'get_short_url', 'creation_date')
+    list_display = ('get_title', 'get_categories', 'get_tags', 
+                    'comment_enabled', 'get_is_visible', 'get_link', 'creation_date')
     filter_horizontal = ('categories', 'authors', 'related')
     prepopulated_fields = {'slug': ('title', )}
     search_fields = ('title', 'excerpt', 'content', 'tags')
