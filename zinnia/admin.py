@@ -36,8 +36,7 @@ class EntryAdmin(admin.ModelAdmin):
                    'comment_enabled', 'pingback_enabled',
                    #'creation_date', 'start_publication', 'end_publication', 
                    'sites')
-    list_display = ('get_title', 'get_categories', 'get_tags', 
-                    'comment_enabled', 'get_is_visible', 'get_link', 'creation_date')
+    list_display = ('get_title', 'get_categories', 'get_tags', 'get_is_visible', 'get_link', 'creation_date')
     filter_horizontal = ('categories', 'authors', 'related')
     prepopulated_fields = {'slug': ('title', )}
     search_fields = ('title', 'excerpt', 'content', 'tags')
@@ -75,22 +74,22 @@ class EntryAdmin(admin.ModelAdmin):
         """Return the categories linked in HTML"""
         try:
             categories = ['<a href="%s" target="blank">%s</a>' %
-                          (category.get_absolute_url(), category.title)
+                          (category.get_absolute_url(), category.title.replace(' ', '&nbsp;'))
                           for category in entry.categories.all()]
         except NoReverseMatch:
             categories = [category.title for category in entry.categories.all()]
-        return ', '.join(categories)
+        return '<br />'.join(categories)
     get_categories.allow_tags = True
     get_categories.short_description = _('category(s)')
 
     def get_tags(self, entry):
         """Return the tags linked in HTML"""
         try:
-            return ', '.join(['<a href="%s" target="blank">%s</a>' %
-                              (reverse('zinnia_tag_detail', args=[tag]), tag)
+            return '<br />'.join(['<a href="%s" target="blank">%s</a>' %
+                              (reverse('zinnia_tag_detail', args=[tag]), tag.replace('-', '&#8209;'))
                               for tag in entry.tags.replace(',', '').split()])
         except NoReverseMatch:
-            return ', '.join(entry.tags.replace(',', '').split())
+            return '<br />'.join(entry.tags.replace(',', '').split())
     get_tags.allow_tags = True
     get_tags.short_description = _('tag(s)')
 
@@ -115,7 +114,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     def get_link(self, entry):
         """Return a formated link to the entry"""
-        return _('<a href="%s" target="blank">View</a>') % entry.get_absolute_url()
+        return _('<a href="%s" target="blank">%s</a>') % (entry.get_absolute_url(), entry.slug.replace('-', '&#8209;'))
     get_link.allow_tags = True
     get_link.short_description = _('View on site')
 
